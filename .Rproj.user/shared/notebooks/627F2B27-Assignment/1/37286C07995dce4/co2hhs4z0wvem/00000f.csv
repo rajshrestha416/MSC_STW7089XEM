@@ -1,0 +1,5 @@
+"0","#task-2.1"
+"0","ones=matrix(1,length(x_inputs)/4,1)"
+"0",""
+"0","#random noise"
+"0","noise = rnorm(length(x_inputs)/4, 0, 0.1)"

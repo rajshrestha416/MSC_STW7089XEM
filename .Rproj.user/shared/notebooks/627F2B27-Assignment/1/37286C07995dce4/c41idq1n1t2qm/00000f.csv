@@ -1,0 +1,2 @@
+"0","##QQplot Graph and QQ line of model 3"
+"0","qqnorm(model_2_error, col = ""skyblue"",main = ""QQ plot of Model 2"")"

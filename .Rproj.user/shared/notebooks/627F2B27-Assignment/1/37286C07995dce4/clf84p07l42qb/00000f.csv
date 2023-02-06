@@ -1,0 +1,3 @@
+"0","#Task 2.5"
+"0","##QQplot Graph and QQ line of model 1"
+"0","qqnorm(model_1_error, col = ""skyblue"",main = ""QQ plot of Model 1"")"

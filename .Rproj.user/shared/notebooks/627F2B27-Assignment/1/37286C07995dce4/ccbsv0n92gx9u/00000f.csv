@@ -1,0 +1,6 @@
+"0","list_models = c(""Model 1"", ""Model 2"", ""Model 3"", ""Model 4"", ""Model 5"")"
+"0","list_aic = c(AIC_model_1, AIC_model_2, AIC_model_3, AIC_model_4, AIC_model_5)"
+"0","list_bic = c(BIC_model_1, BIC_model_2, BIC_model_3, BIC_model_4, BIC_model_5)"
+"0","list_rss = c(model_1_rss, model_2_rss, model_3_rss, model_4_rss, model_5_rss)"
+"0","list_likelihood = c(model_1_likelihood, model_2_likelihood, model_3_likelihood, model_4_likelihood, model_5_likelihood)"
+"0","data.frame(Models = list_models, RSS = list_rss, AIC = list_aic, BIC = list_bic,  Likelihood = list_likelihood)"

@@ -1,0 +1,5 @@
+"0","plot_ly(x=x_inputs[,""X1""], y=y_output[,""Y""], mode=""markers"", type = ""scatter"") %>%"
+"0","  add_markers(marker = list(color = x_inputs[,""X1""], showscale = FALSE)) %>%"
+"0","  layout(title = ""<br><b>Correlation between X1 and Y signal</b>"","
+"0","         xaxis = list(title = ""X1 signal"", showgrid=FALSE, zeroline=FALSE, showline=TRUE),"
+"0","         yaxis = list(title = ""Output signal"", showgrid=FALSE, zeroline=FALSE, showline=TRUE))"

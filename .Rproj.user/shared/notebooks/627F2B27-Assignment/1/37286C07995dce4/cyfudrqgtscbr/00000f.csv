@@ -1,0 +1,5 @@
+"0","#for error bar calculation"
+"0","conf_interval = t.test(y_training_data) #default 95% confidence interval"
+"0","conf_interval_start = conf_interval$conf.int[1]"
+"0","conf_interval_end = conf_interval$conf.int[2]"
+"0","error_line = conf_interval$stderr"

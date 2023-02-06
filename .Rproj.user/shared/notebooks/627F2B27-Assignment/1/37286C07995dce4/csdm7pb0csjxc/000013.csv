@@ -1,0 +1,4 @@
+"0","plot_ly(x = time(y_ts), y = y_ts[,1], type = ""scatter"", mode = ""lines"", name = ""X1"") %>%"
+"0","  layout(title = ""<b>Time series plot of output EEG signal</b>"", "
+"0","         xaxis = list(title = ""Time"", showgrid=FALSE, showline=T), "
+"0","         yaxis = list(title = ""Input signal"", showgrid=FALSE))"

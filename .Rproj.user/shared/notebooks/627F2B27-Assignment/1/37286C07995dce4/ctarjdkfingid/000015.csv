@@ -1,0 +1,4 @@
+"0","data_df <- data.frame(value = as.vector(x_inputs),"
+"0","                      data_group = rep(paste(""Data"", 1:ncol(x_inputs), sep = "" ""), "
+"0","                                       nrow(x_inputs)))"
+"0","data_df"

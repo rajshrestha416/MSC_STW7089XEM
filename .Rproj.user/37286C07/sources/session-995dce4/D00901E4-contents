@@ -1,0 +1,606 @@
+```{r}
+#### Importing Data
+library(readr)
+library(ggplot2)
+library(plotly)
+
+x_inputs <- as.matrix(read_csv("~/Downloads/X_1673241366257.csv"), header = F)
+colnames(x_inputs) <- c("X1", "X2", "X3", "X4")
+#x_inputs
+
+y_output <- as.matrix(read_csv("~/Downloads/y_1673241374123.csv"), header = F)
+colnames(y_output) <- c("Y")
+#y_output
+
+time <- as.matrix(read.csv("~/Downloads/time_1673241270748.csv"), header = F, skip = 1)
+time <- rbind(0, time)
+```
+
+```{r}
+x_ts<-ts(x_inputs,start = c(min(time),max(time)),frequency =1)
+#x_ts
+
+y_ts<-ts(y_output,start = c(min(time),max(time)),frequency =1)
+#time(y_ts)
+```
+
+```{r}
+plot_ly(x = time(y_ts), y = x_ts[,1], type = "scatter", mode = "lines", name = "X1") %>%
+  layout(title = "Time series plot of X1 Signal", 
+         xaxis = list(title = "Time", showgrid=FALSE), 
+         yaxis = list(title = "Input signal X1" , showgrid=FALSE))
+```
+
+```{r}
+#creating time serie plot for all signals
+#create the plot
+plot = plot_ly(x = time(y_ts), y = x_ts[,1], type = "scatter", mode = "lines", name = "X1")
+
+# not add other signal trace
+for(i in 2:ncol(x_ts)){
+  col_name = paste0("X", i)
+  plot = plot %>% add_trace(y=x_ts[,i], name = col_name)
+}
+
+# loayout
+plot = plot %>% layout(title = "Time series plot of X Signal", 
+         xaxis = list(title = "Time", showgrid=FALSE), 
+         yaxis = list(title = "Input signal", showgrid=FALSE))
+
+plot
+```
+
+```{r}
+#creating a list of plots
+plots = list()
+
+for(i in 1: ncol(x_ts)){
+  p = plot_ly(x = time(x_ts), y = x_ts[,i], type = "scatter", mode = "lines", name = paste0("X", i))
+  p = p %>% layout(xaxis = list(showgrid = FALSE, title="Time"),
+           yaxis = list(showgrid = FALSE, title = paste0("X",i)))
+  plots[[i]] = p
+}
+
+fig <- subplot(plots[[1]], plots[[2]], plots[[3]], plots[[4]], nrows = 4, shareX = TRUE, titleX = TRUE, titleY = TRUE) 
+fig <- fig %>% layout(title="<b>Time Series plot of input EEG signals</b>")
+fig
+```
+```{r}
+plot_ly(x = time(y_ts), y = y_ts[,1], type = "scatter", mode = "lines", name = "X1") %>%
+  layout(title = "<b>Time series plot of output EEG signal</b>", 
+         xaxis = list(title = "Time", showgrid=FALSE, showline=T), 
+         yaxis = list(title = "Input signal", showgrid=FALSE))
+```
+
+```{r}
+data_df <- data.frame(value = as.vector(x_inputs),
+                      data_group = rep(paste("Data", 1:ncol(x_inputs), sep = " "), 
+                                       nrow(x_inputs)))
+data_df
+gg <- ggplot(data_df, aes(x = value, fill = data_group)) +
+  geom_histogram(aes(y = after_stat(density)), bins = 10, alpha = 1) +
+  stat_density(aes(y = after_stat(density)), alpha = 1, geom = 'line') +
+  geom_rug(data = data.frame(data_df), aes(x = value), color = "black") + 
+  labs(fill = "Data Group")
+
+ggplotly(gg)%>% layout(
+  xaxis= list(showgrid= FALSE, showline=TRUE),
+  yaxis= list(showgrid= FALSE, showline=TRUE),
+  plot_bgcolor="white",
+  title = list(text = "<b>Histogram and density plot of Input signals</b>")
+)
+```
+
+
+```{r}
+#Signal 1
+plot = ggplot(data.frame(x_inputs[,"X1"]), aes(x_inputs[,"X1"])) +
+  geom_histogram(aes(y = after_stat(density)), bins = 10, fill = "skyblue", alpha = 1) +
+  stat_density(aes(y = after_stat(density)), colour = "orange", alpha = 1, geom = 'line') +
+  geom_rug(data = data.frame(x_inputs[,"X1"]), aes(x = x_inputs[,"X1"]), color = "black") + 
+  xlab("X1 Signal") 
+
+ggplotly(plot) %>% layout(
+  xaxis= list(showgrid= FALSE, showline=TRUE),
+  yaxis= list(showgrid= FALSE, showline=TRUE),
+  plot_bgcolor="white",
+  title = list(text = "<b>Histogram and density plot of X1</b>")
+)
+```
+
+```{r}
+#Signal 2
+par(mar = c(3, 3, 3, 3)) # Set the margin on all sides to 2
+plot = ggplot(data.frame(x_inputs[,"X2"]), aes(x_inputs[,"X2"])) +
+  geom_histogram(aes(y = ..density..), bins = 10, fill = "skyblue", alpha = 1) +
+  stat_density(aes(y = after_stat(density)), colour = "orange", alpha = 1, geom = 'line') +
+  geom_rug(data = data.frame(x_inputs[,"X2"]), aes(x = x_inputs[,"X2"]), color = "black") + 
+  xlab("X2 Signal") 
+
+ggplotly(plot) %>% layout(
+  xaxis= list(showgrid= FALSE, showline=TRUE),
+  yaxis= list(showgrid= FALSE, showline=TRUE),
+  plot_bgcolor="white",
+  title = list(text = "<b>Histogram and density plot of X2</b>")
+)
+```
+
+```{r}
+#Signal 3
+plot = ggplot(data.frame(x_inputs[,"X3"]), aes(x_inputs[,"X3"])) +
+  geom_histogram(aes(y = ..density..), bins = 10, fill = "skyblue", alpha = 1) +
+  stat_density(aes(y = ..density..), colour = "orange", alpha = 1, geom = 'line') +
+  geom_rug(data = data.frame(x_inputs[,"X3"]), aes(x = x_inputs[,"X3"]), color = "black") + 
+  xlab("X3 Signal") 
+
+ggplotly(plot) %>% layout(
+  xaxis= list(showgrid= FALSE, showline=TRUE),
+  yaxis= list(showgrid= FALSE, showline=TRUE),
+  plot_bgcolor="white",
+  title = list(text = "<b>Histogram and density plot of X3</b>")
+)
+```
+
+
+```{r}
+#Signal 4
+plot = ggplot(data.frame(x_inputs[,"X4"]), aes(x_inputs[,"X4"])) +
+  geom_histogram(aes(y = ..density..), bins = 10, fill = "skyblue", alpha = 1) +
+  stat_density(aes(y = ..density..), colour = "orange", alpha = 1, geom = 'line') +
+  geom_rug(data = data.frame(x_inputs[,"X4"]), aes(x = x_inputs[,"X4"]), color = "black") + 
+  xlab("X4 Signal") 
+
+ggplotly(plot) %>% layout(
+  xaxis= list(showgrid= FALSE, showline=TRUE),
+  yaxis= list(showgrid= FALSE, showline=TRUE),
+  plot_bgcolor="white",
+  title = list(text = "<br><b>Histogram and density plot of X4<b>")
+)
+```
+
+
+```{r}
+#Output Signal
+plot = ggplot(data.frame(y_output[,"Y"]), aes(y_output[,"Y"])) +
+  geom_histogram(aes(y = ..density..), bins = 10, fill = "skyblue", alpha = 1) +
+  stat_density(aes(y = ..density..), colour = "orange", alpha = 1, geom = 'line') +
+  geom_rug(data = data.frame(y_output[,"Y"]), aes(x = y_output[,"Y"]), color = "black") + 
+  xlab("Y Signal") 
+
+ggplotly(plot) %>% layout(
+  xaxis= list(showgrid= FALSE, showline=TRUE),
+  yaxis= list(showgrid= FALSE, showline=TRUE),
+  plot_bgcolor="white",
+  title = list(text = "<br><b>Histogram and density plot of Output Signal<b>")
+)
+```
+
+```{r}
+#Output Signal
+plot = ggplot(data.frame(y_output[,"Y"]), aes(y_output[,"Y"])) +
+  geom_density(colour = "blue", alpha = 1) +
+  xlab("Y Signal")
+
+ggplotly(plot) %>% layout(
+  xaxis= list(showgrid= FALSE, showline=TRUE),
+  yaxis= list(showgrid= FALSE, showline=TRUE),
+  plot_bgcolor="white",
+  title = list(text = "Density plot of Output Signal")
+)
+```
+
+```{r}
+plot_ly(x=x_inputs[,"X1"], y=y_output[,"Y"], mode="markers", type = "scatter") %>%
+  add_markers(marker = list(color = x_inputs[,"X1"], showscale = FALSE)) %>%
+  layout(title = "<br><b>Correlation between X1 and Y signal</b>",
+         xaxis = list(title = "X1 signal", showgrid=FALSE, zeroline=FALSE, showline=TRUE),
+         yaxis = list(title = "Output signal", showgrid=FALSE, zeroline=FALSE, showline=TRUE))
+```
+
+```{r}
+plot_ly(x=x_inputs[,"X2"], y=y_output[,"Y"], mode="markers", type = "scatter") %>%
+  add_markers(marker = list(color = x_inputs[,"X2"], showscale = FALSE)) %>%
+  layout(title = "<br><b>Correlation between X2 and Y signal</b>",
+         xaxis = list(title = "X2 signal", showgrid=FALSE, zeroline=FALSE, showline=TRUE),
+         yaxis = list(title = "Output signal", showgrid=FALSE, zeroline=FALSE, showline=TRUE))
+```
+
+```{r}
+plot_ly(x=x_inputs[,"X3"], y=y_output[,"Y"], mode="markers", type = "scatter") %>%
+  add_markers(marker = list(color = x_inputs[,"X3"], showscale = FALSE)) %>%
+  layout(title = "<br><b>Correlation between X3 and Y signal</b>",
+         xaxis = list(title = "X3 signal", showgrid=FALSE, zeroline=FALSE, showline=TRUE),
+         yaxis = list(title = "Output signal", showgrid=FALSE, zeroline=FALSE, showline=TRUE))
+```
+
+```{r}
+plot_ly(x=x_inputs[,"X4"], y=y_output[,"Y"], mode="markers", type = "scatter") %>%
+  add_markers(marker = list(color = x_inputs[,"X4"])) %>%
+  layout(title = "<br><b>Correlation between X4 and Y signal</b>",
+         xaxis = list(title = "X4 signal", showgrid=FALSE, zeroline=FALSE, showline=TRUE),
+         yaxis = list(title = "Output signal", showgrid=FALSE, zeroline=FALSE, showline=TRUE))
+```
+
+```{r}
+#task-2.1
+ones=matrix(1,length(x_inputs)/4,1)
+
+#random noise
+noise = rnorm(length(x_inputs)/4, 0, 0.1)
+```
+
+```{r}
+#Model 1:
+x_model_1 = cbind((x_inputs[,"X4"]), (x_inputs[,"X1"])**2 , (x_inputs[,"X1"])**3 , (x_inputs[,"X2"])**4 , (x_inputs[,"X1"])**4 ,ones, noise)
+model_1_theta_hat = solve(t(x_model_1) %*% x_model_1) %*% t(x_model_1) %*% y_output
+
+model_1_theta_hat
+```
+
+```{r}
+#Model 2:
+x_model_2 = cbind((x_inputs[,"X4"]), (x_inputs[,"X1"])**3 , (x_inputs[,"X3"])**4, ones, noise)
+
+model_2_theta_hat = solve(t(x_model_2) %*% x_model_2) %*% t(x_model_2) %*% y_output
+
+model_2_theta_hat
+```
+
+```{r}
+#Model 3:
+x_model_3 = cbind((x_inputs[,"X3"])**3, (x_inputs[,"X3"])**4 ,ones, noise)
+
+model_3_theta_hat = solve(t(x_model_3) %*% x_model_3) %*% t(x_model_3) %*% y_output
+
+model_3_theta_hat
+```
+
+```{r}
+#Model 4:
+x_model_4 = cbind((x_inputs[,"X2"]), (x_inputs[,"X1"])**3 , (x_inputs[,"X3"])**4,ones,noise)
+
+model_4_theta_hat = solve(t(x_model_4) %*% x_model_4) %*% t(x_model_4) %*% y_output
+
+model_4_theta_hat
+```
+
+```{r}
+#Model 5:
+x_model_5 = cbind((x_inputs[,"X4"]), (x_inputs[,"X1"])**2 , (x_inputs[,"X1"])**3 , (x_inputs[,"X3"])**4, ones, noise)
+model_5_theta_hat = solve(t(x_model_5) %*% x_model_5) %*% t(x_model_5) %*% y_output
+
+model_5_theta_hat
+```
+
+```{r}
+#Task 2.2
+
+#Model 1
+#Calculating Y-hat and Rss Model 1
+model_1_y_hat = x_model_1 %*% model_1_theta_hat
+#RSS
+model_1_error = y_output-model_1_y_hat
+model_1_rss=sum((model_1_error)^2)
+model_1_rss
+```
+```{r}
+#Model 2
+model_2_y_hat = x_model_2 %*% model_2_theta_hat
+
+#RSS
+model_2_error = y_output-model_2_y_hat
+model_2_rss=sum((model_2_error)^2)
+model_2_rss
+```
+```{r}
+#Model 3
+model_3_y_hat = x_model_3 %*% model_3_theta_hat
+
+#RSS
+model_3_error = y_output-model_3_y_hat
+model_3_rss=sum((model_3_error)^2)
+model_3_rss
+```
+
+```{r}
+#Model 4
+model_4_y_hat = x_model_4 %*% model_4_theta_hat
+
+#RSS
+model_4_error = y_output-model_4_y_hat
+model_4_rss=sum(model_4_error^2)
+model_4_rss
+```
+
+```{r}
+#Model 5
+model_5_y_hat = x_model_5 %*% model_5_theta_hat
+
+#RSS
+model_5_error = y_output-model_5_y_hat
+model_5_rss=sum(model_5_error^2)
+model_5_rss
+```
+
+
+```{r}
+#Task 2.3
+N=length(y_output)
+
+#Model 1
+#Variance
+model_1_variance=model_1_rss/(N-1)
+model_1_variance
+
+#log-likelihood function
+model_1_likelihood=-(N/2)*(log(2*pi))-(N/2)*(log(model_1_variance))-(1/(2*model_1_variance))*model_1_rss
+model_1_likelihood
+```
+```{r}
+#Model 2
+#Variance
+model_2_variance=model_2_rss/(N-1)
+model_2_variance
+
+#log-likelihood function
+model_2_likelihood=-(N/2)*(log(2*pi))-(N/2)*(log(model_2_variance))-(1/(2*model_2_variance))*model_2_rss
+model_2_likelihood
+```
+
+```{r}
+#Model 3
+#Variance
+model_3_variance=model_3_rss/(N-1)
+model_3_variance
+
+#log-likelihood function
+model_3_likelihood= -(N/2)*(log(2*pi))-(N/2)*(log(model_3_variance))-(1/(2*model_3_variance))*model_3_rss
+model_3_likelihood
+```
+
+```{r}
+#Model 4
+#Variance
+model_4_variance=model_4_rss/(N-1)
+model_4_variance
+
+#log-likelihood function
+model_4_likelihood= -(N/2)*(log(2*pi))-(N/2)*(log(model_4_variance))-(1/(2*model_4_variance))*model_4_rss
+model_4_likelihood
+```
+
+```{r}
+#Model 5
+#Variance
+model_5_variance=model_5_rss/(N-1)
+model_5_variance
+
+#log-likelihood function
+model_5_likelihood= -(N/2)*(log(2*pi))-(N/2)*(log(model_5_variance))-(1/(2*model_5_variance))*model_5_rss
+model_5_likelihood
+```
+
+```{r}
+#Task 2.4
+#Model 1
+#K (Estimated Parameter)
+model_1_k<-length(model_1_theta_hat)
+model_1_k
+# AIC
+AIC_model_1=2*model_1_k-2*model_1_likelihood
+AIC_model_1
+#BIC
+BIC_model_1=model_1_k*log(N)-2*model_1_likelihood
+BIC_model_1
+
+```
+```{r}
+#Model 2
+#K (Estimated Parameter)
+model_2_k<-length(model_2_theta_hat)
+model_2_k
+#AIC
+AIC_model_2=2*model_2_k-2*model_2_likelihood
+AIC_model_2
+#BIC
+BIC_model_2=model_2_k*log(N)-2*model_2_likelihood
+BIC_model_2
+```
+
+```{r}
+#Model 3
+#K (Estimated Parameter)
+model_3_k<-length(model_3_theta_hat)
+model_3_k
+#AIC
+AIC_model_3=2*model_3_k-2*model_3_likelihood
+AIC_model_3
+#BIC
+BIC_model_3=model_3_k*log(N)-2*model_3_likelihood
+BIC_model_3
+```
+```{r}
+#Model 4
+#K (Estimated Parameter)
+model_4_k<-length(model_4_theta_hat)
+model_4_k
+#AIC
+AIC_model_4=2*model_4_k-2*model_4_likelihood
+AIC_model_4
+#BIC
+BIC_model_4=model_4_k*log(N)-2*model_4_likelihood
+BIC_model_4
+```
+
+```{r}
+#Model 5
+#K (Estimated Parameter)
+model_5_k<-length(model_5_theta_hat)
+model_5_k
+#AIC
+AIC_model_5=2*model_5_k-2*model_5_likelihood
+AIC_model_5
+#BIC
+BIC_model_5=model_5_k*log(N)-2*model_5_likelihood
+BIC_model_5
+```
+
+
+```{r}
+#Task 2.5
+##QQplot Graph and QQ line of model 1
+qqnorm(model_1_error, col = "skyblue",main = "QQ plot of Model 1")
+qqline(model_1_error, col = "orange",lwd=1)
+
+```
+
+```{r}
+##QQplot Graph and QQ line of model 3
+qqnorm(model_2_error, col = "skyblue",main = "QQ plot of Model 2")
+qqline(model_2_error, col = "orange",lwd=1)
+```
+```{r}
+##QQplot Graph and QQ line of model 3
+qqnorm(model_3_error, col = "skyblue",main = "QQ plot of Model 3")
+qqline(model_3_error, col = "orange",lwd=1)
+```
+```{r}
+##QQplot Graph and QQ line of model 4
+qqnorm(model_4_error, col = "skyblue",main = "QQ plot of Model 4")
+qqline(model_4_error, col = "orange",lwd=1)
+```
+
+```{r}
+##QQplot Graph and QQ line of model 1
+qqnorm(model_5_error, col = "skyblue",main = "QQ plot of Model 5")
+qqline(model_5_error, col = "orange",lwd=1)
+```
+```{r}
+list_models = c("Model 1", "Model 2", "Model 3", "Model 4", "Model 5")
+list_aic = c(AIC_model_1, AIC_model_2, AIC_model_3, AIC_model_4, AIC_model_5)
+list_bic = c(BIC_model_1, BIC_model_2, BIC_model_3, BIC_model_4, BIC_model_5)
+list_rss = c(model_1_rss, model_2_rss, model_3_rss, model_4_rss, model_5_rss)
+list_likelihood = c(model_1_likelihood, model_2_likelihood, model_3_likelihood, model_4_likelihood, model_5_likelihood)
+data.frame(Models = list_models, RSS = list_rss, AIC = list_aic, BIC = list_bic,  Likelihood = list_likelihood)
+```
+
+```{r}
+#Task 2.7
+#split data x
+x_nrow = nrow(x_inputs)
+x_splitIndex <- sample(1:x_nrow, size = 0.7 * x_nrow , replace = FALSE)
+x_training_data <- x_inputs[x_splitIndex, ]
+x_testing_data <- x_inputs[-x_splitIndex, ]
+
+#split data y
+y_nrow = nrow(y_output)
+y_splitIndex <- sample(1:x_nrow, size = 0.7 * x_nrow , replace = FALSE)
+y_training_data <- y_output[y_splitIndex, ]
+y_testing_data <- y_output[-y_splitIndex, ]
+```
+
+
+```{r}
+#Using Model number one task 2.7
+#training
+training_ones=matrix(1,length(x_training_data)/4,1)
+testing_ones=matrix(1,length(x_testing_data)/4,1)
+
+#random noise
+noise_training = rnorm(length(x_training_data)/4, 0, 0.1)
+noise_testing = rnorm(length(x_testing_data)/4, 0, 0.1)
+
+training_x = cbind((x_training_data[,"X4"]), (x_training_data[,"X1"])**3 , (x_training_data[,"X3"])**4 ,training_ones, noise_training)
+
+training_theta_hat = solve(t(training_x) %*% training_x) %*% t(training_x) %*% y_training_data
+
+training_theta_hat
+
+```
+```{r}
+testing_x = cbind((x_testing_data[,"X4"]), (x_testing_data[,"X1"])**3, (x_testing_data[,"X3"])**4 ,testing_ones, noise_testing)
+```
+
+```{r}
+#Calculating Y-hat and Rss Model 1
+testing_y_hat = testing_x %*% training_theta_hat
+training_y_hat = training_x %*% training_theta_hat
+
+#RSS
+training_error = y_testing_data-testing_y_hat
+training_rss=sum((training_error)^2)
+training_rss
+```
+
+```{r}
+#for error bar calculation
+conf_interval = t.test(y_training_data) #default 95% confidence interval
+conf_interval_start = conf_interval$conf.int[1]
+conf_interval_end = conf_interval$conf.int[2]
+error_line = conf_interval$stderr
+```
+
+
+```{r}
+plot(density(y_training_data), col="blue", lwd=2, main="Distribution of Training Data", 
+     xlab="Value", ylab="Density")
+abline(v=conf_interval_start,col="red", lty=2) 
+abline(v=conf_interval_end,col="red", lty=2)
+abline(v=error_line,col="black", lty=2)
+
+plot(density(y_testing_data), col="blue", lwd=2, main="Distribution of Testing Data", 
+     xlab="Value", ylab="Density")
+abline(v=conf_interval_start,col="red", lty=2) 
+abline(v=conf_interval_end,col="red", lty=2)
+abline(v=error_line,col="black", lty=2)
+```
+```{r}
+#Task 3
+#Model 2 will be used, parameter are selected and kept constant
+
+arr_2=0
+arr_1=0
+f_value=0
+s_value=0
+
+theta_bias <-  model_2_theta_hat[4] 
+theta_one <- model_2_theta_hat[1]
+theta_two <- model_2_theta_hat[2]
+theta_three <- model_2_theta_hat[3]
+theta_noise <- model_2_theta_hat[5]
+
+theta_bias
+epison <- model_1_rss * 2
+number <- 100
+
+##Calculating Y-hat for performing rejection ABC 
+counter <- 0
+
+for(i in 1:number){
+  range1 <- runif(1, -abs(theta_bias), abs(theta_bias))
+  range1
+  
+  range2 <- runif(1, -abs(theta_one), abs(theta_one))
+  
+  new_theta_hat <- matrix(c(range1,range2,theta_two,theta_three,theta_noise))
+  new_y_hat <- x_model_2 %*% new_theta_hat
+  
+  new_rss <- sum((y_output - new_y_hat)^2)
+  new_rss
+  
+  if(new_rss > epison){
+    arr_1[i] <- range1
+    arr_2[i] <- range2
+    counter = counter+1
+    f_value <- matrix(arr_1)
+    s_value <- matrix(arr_2)
+  }
+    
+}
+hist(f_value)
+hist(s_value)
+
+plot(f_value,s_value, col = c("orange", "skyblue"), main = "Joint and Marginal Posterior Distribution")
+
+```
+

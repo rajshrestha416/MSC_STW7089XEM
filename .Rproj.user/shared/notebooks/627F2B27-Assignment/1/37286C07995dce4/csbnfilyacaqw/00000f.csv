@@ -1,0 +1,4 @@
+"0","plot_ly(x = time(y_ts), y = x_ts[,1], type = ""scatter"", mode = ""lines"", name = ""X1"") %>%"
+"0","  layout(title = ""Time series plot of X1 Signal"", "
+"0","         xaxis = list(title = ""Time"", showgrid=FALSE), "
+"0","         yaxis = list(title = ""Input signal X1"" , showgrid=FALSE))"
