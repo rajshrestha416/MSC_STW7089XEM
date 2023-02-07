@@ -1,36 +1,9 @@
 "0","#### Importing Data"
+"2","Warning: The working directory was changed to /Users/rajshrestha416 inside a notebook chunk. The working directory will be reset when the chunk is finished running. Use the knitr root.dir option in the setup chunk to change the working directory for notebook chunks."
 "0","library(readr)"
 "0","library(ggplot2)"
-"2","Use suppressPackageStartupMessages() to eliminate package startup messages
-"
 "0","library(plotly)"
-"2","Registered S3 method overwritten by 'data.table':
-  method           from
-  print.data.table     
-"
-"2","Registered S3 method overwritten by 'htmlwidgets':
-  method           from         
-  print.htmlwidget tools:rstudio
-"
-"2","
-Attaching package: ‘plotly’
-
-"
-"2","The following object is masked from ‘package:ggplot2’:
-
-    last_plot
-
-"
-"2","The following object is masked from ‘package:stats’:
-
-    filter
-
-"
-"2","The following object is masked from ‘package:graphics’:
-
-    layout
-
-"
+"0",""
 "0","x_inputs <- as.matrix(read_csv(""~/Downloads/X_1673241366257.csv""), header = F)"
 "2","[1mRows: [22m[34m200[39m [1mColumns: [22m[34m4[39m"
 "2","[36m──[39m [1mColumn specification[22m [36m─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────[39m

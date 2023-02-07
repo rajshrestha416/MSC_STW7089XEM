@@ -190,6 +190,7 @@ ggplotly(plot) %>% layout(
 ```
 
 ```{r}
+#Correlation Plot
 plot_ly(x=x_inputs[,"X1"], y=y_output[,"Y"], mode="markers", type = "scatter") %>%
   add_markers(marker = list(color = x_inputs[,"X1"], showscale = FALSE)) %>%
   layout(title = "<br><b>Correlation between X1 and Y signal</b>",
